@@ -4,10 +4,26 @@
     <string name="app_name">My Application</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="button">Кнопка</string>
-    <string name="button_1">Кнопка 1</string>
-    <string name="button_2">Кнопка 2</string>
-    <string name="button_3">Кнопка 3</string>
+    <string name="button">Button</string>
+    <string name="button_1">Button 1</string>
+    <string name="button_2">Button 2</string>
+    <string name="button_3">Button 3</string>
     <string name="hello_blank_fragment">Hello blank fragment 2</string>
+    <string name="hide">Hide Action Bar</string>
+    <string name="show">Show Action Bar</string>
+    <string name="title_activity_my_activity2">MyActivity2</string>
+    <string name="empty">Not date</string>
+    <string name="title_activity_my_activity3">MyActivity3</string>
+    <string name="textView">TextView</string>
+    <string name="list_text">Image list</string>
+    <string name="action_search">action_search</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    <string-array name="views_array">
+        <item>The first scree</item>
+        <item>The second screen</item>
+        <item>The third screen</item>
+    </string-array>
+    <string name="menu">Menu</string>
 
 </resources>
