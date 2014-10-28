@@ -46,13 +46,13 @@ public class Fragment1 extends Fragment implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button1:
-                txt.setText("Нажата кнопка \"Кнопка 1\"");
+                txt.setText("Нажата кнопка \"Button 1\"");
                 break;
             case R.id.button2:
-                txt.setText("Нажата кнопка \"Кнопка 2\"");
+                txt.setText("Нажата кнопка \"Button 2\"");
                 break;
             case R.id.button3:
-                txt.setText("Нажата кнопка \"Кнопка 3\"");
+                txt.setText("Нажата кнопка \"Button 3\"");
                 break;
             case R.id.bHide:
                actionBar.hide();

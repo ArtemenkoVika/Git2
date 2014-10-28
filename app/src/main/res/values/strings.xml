@@ -15,7 +15,7 @@
     <string name="empty">Not date</string>
     <string name="title_activity_my_activity3">MyActivity3</string>
     <string name="textView">TextView</string>
-    <string name="list_text">Image list</string>
+    <string name="list_text">List</string>
     <string name="action_search">action_search</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>

@@ -11,7 +11,7 @@ import android.widget.ListAdapter;
 import android.widget.ArrayAdapter;
 
 public class Fragment2 extends ListFragment {
-    private static final String data[] = new String[]{"First Screen", "Second Screen", "Change The Picture"};
+    private static final String data[] = new String[]{"First", "Second", "Third"};
     private TextView text;
     public static ListAdapter adapter;
 
@@ -19,7 +19,7 @@ public class Fragment2 extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_single_choice, data);
+                android.R.layout.simple_list_item_1, data);
         setListAdapter(adapter);
     }
 
