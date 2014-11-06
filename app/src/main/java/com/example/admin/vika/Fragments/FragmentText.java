@@ -39,7 +39,6 @@ public class FragmentText extends Fragment {
             text = (TextView) getActivity().findViewById(R.id.text);
             imageView = (ImageView) getActivity().findViewById(R.id.image);
             textView = (TextView) getActivity().findViewById(R.id.textF);
-            textView.setTextSize(15);
             switch (position) {
                 case 0:
                     text.setText("Немецкий рекс");

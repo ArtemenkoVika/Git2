@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -38,7 +37,6 @@ public class MainActivity extends FragmentActivity implements Fragment1.onSomeEv
     private static final int IDM_CAT3 = 103;
     private static final int IDM_CAT4 = 104;
     private ActionBar actionBar;
-    private Fragment fragment1;
     private Fragment fragment2;
     public static final int ACTION_EDIT = 101;
     public static final String IDE_EXTRA = "param";
@@ -51,7 +49,6 @@ public class MainActivity extends FragmentActivity implements Fragment1.onSomeEv
         setTitle("Cats");
         actionBar = getActionBar();
         actionBar.setIcon(R.drawable.cat_action);
-        fragment1 = new Fragment1();
         fragment2 = (FragmentText) getSupportFragmentManager().findFragmentById(R.id.details_frag);
         myTitle = getTitle();
         myDrawerTitle = getResources().getString(R.string.menu);
@@ -86,25 +83,6 @@ public class MainActivity extends FragmentActivity implements Fragment1.onSomeEv
     }
 
     @Override
-    public void someEvent(Integer position) {
-        if (fragment2 == null) {
-            intent = new Intent();
-            intent.putExtra(IDE_EXTRA, position);
-            intent.setClass(this, TextActivity.class);
-            startActivityForResult(intent, ACTION_EDIT);
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (fragment2 != null) {
-            textView = (TextView) findViewById(R.id.textF);
-            text = (TextView) findViewById(R.id.text);
-        }
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (fragment2 != null) {
@@ -123,6 +101,25 @@ public class MainActivity extends FragmentActivity implements Fragment1.onSomeEv
             String str2 = savedInstanceState.getString("text");
             textView.setText(str1);
             text.setText(str2);
+        }
+    }
+
+    @Override
+    public void someEvent(Integer position) {
+        if (fragment2 == null) {
+            intent = new Intent();
+            intent.putExtra(IDE_EXTRA, position);
+            intent.setClass(this, TextActivity.class);
+            startActivityForResult(intent, ACTION_EDIT);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (fragment2 != null) {
+            textView = (TextView) findViewById(R.id.textF);
+            text = (TextView) findViewById(R.id.text);
         }
     }
 

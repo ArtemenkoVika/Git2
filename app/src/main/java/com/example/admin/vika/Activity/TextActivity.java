@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin.vika.Fragments.FragmentText;
@@ -34,24 +33,6 @@ public class TextActivity extends FragmentActivity {
         Bundle args = new Bundle();
         args.putInt(FragmentText.ARG_POSITION, position);
         fragment2.setArguments(args);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        String str1 = String.valueOf(textView.getText());
-        String str2 = String.valueOf(text.getText());
-        outState.putString("textView", str1);
-        outState.putString("text", str2);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        String str1 = savedInstanceState.getString("textView");
-        String str2 = savedInstanceState.getString("text");
-        textView.setText(str1);
-        text.setText(str2);
     }
 
     @Override
