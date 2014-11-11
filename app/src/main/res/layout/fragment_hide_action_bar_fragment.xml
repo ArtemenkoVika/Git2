@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/holo_blue_bright"
     android:orientation="vertical"
-    tools:context="com.example.admin.vika.Fragments.Frag3">
+    tools:context="com.example.admin.vika.Fragments.HideActionBarFragment">
 
     <Button
         android:id="@+id/button1"
@@ -62,9 +63,9 @@
             android:id="@+id/imageView1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:minHeight="100dp"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/ic_launcher"/>
+            android:minHeight="100dp"
+            android:src="@drawable/ic_launcher" />
 
     </LinearLayout>
 

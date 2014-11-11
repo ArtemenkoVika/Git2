@@ -3,13 +3,13 @@
     android:id="@+id/fragment1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#aafb33"
+    android:background="@android:color/holo_blue_bright"
     android:orientation="horizontal"
-    tools:context="com.example.admin.vika.Fragments.Fragment1">
+    tools:context="com.example.admin.vika.Fragments.MyListFragment">
 
     <ListView
         android:id="@android:id/list"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"></ListView>
 
 </LinearLayout>

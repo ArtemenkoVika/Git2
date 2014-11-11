@@ -2,36 +2,51 @@ package com.example.admin.vika.Activity;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.widget.DrawerLayout;
-import android.content.res.Configuration;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import com.example.admin.vika.Fragments.Frag2;
-import com.example.admin.vika.Fragments.Frag3;
-import com.example.admin.vika.Fragments.Fragment1;
-import com.example.admin.vika.Fragments.FragmentText;
+import com.example.admin.vika.Adapters.CustomAdapter;
+import com.example.admin.vika.Fragments.AnimationFragment;
+import com.example.admin.vika.Fragments.HideActionBarFragment;
+import com.example.admin.vika.Fragments.MyListFragment;
+import com.example.admin.vika.Fragments.TextFragment;
 import com.example.admin.vika.R;
 
-public class MainActivity extends FragmentActivity implements Fragment1.onSomeEventListener {
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class MainActivity extends FragmentActivity implements MyListFragment.onSomeEventListener {
     private DrawerLayout myDrawerLayout;
     private CharSequence myTitle;
     private ListView myDrawerList;
     private ActionBarDrawerToggle myDrawerToggle;
     private CharSequence myDrawerTitle;
     private String[] viewsNames;
-    private TextView textView;
-    private TextView text;
     private static final int IDM_CAT1 = 101;
     private static final int IDM_CAT2 = 102;
     private static final int IDM_CAT3 = 103;
@@ -46,10 +61,19 @@ public class MainActivity extends FragmentActivity implements Fragment1.onSomeEv
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setTitle("Cats");
+        ParseTask mt = new ParseTask();
+        mt.execute();
+        try {
+            new CustomAdapter().setArray(mt.get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        setTitle("RSS Reader");
         actionBar = getActionBar();
         actionBar.setIcon(R.drawable.cat_action);
-        fragment2 = (FragmentText) getSupportFragmentManager().findFragmentById(R.id.details_frag);
+        fragment2 = (TextFragment) getSupportFragmentManager().findFragmentById(R.id.details_frag);
         myTitle = getTitle();
         myDrawerTitle = getResources().getString(R.string.menu);
         viewsNames = getResources().getStringArray(R.array.views_array);
@@ -82,25 +106,73 @@ public class MainActivity extends FragmentActivity implements Fragment1.onSomeEv
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (fragment2 != null) {
-            String str1 = String.valueOf(textView.getText());
-            String str2 = String.valueOf(text.getText());
-            outState.putString("textView", str1);
-            outState.putString("text", str2);
-        }
-    }
+    private class ParseTask extends AsyncTask<Void, String, String[]> {
+        HttpURLConnection urlConnection = null;
+        BufferedReader reader = null;
+        String resultJson = "";
+        String[] title;
+        String[] content;
 
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        if (fragment2 != null) {
-            String str1 = savedInstanceState.getString("textView");
-            String str2 = savedInstanceState.getString("text");
-            textView.setText(str1);
-            text.setText(str2);
+        @Override
+        protected String[] doInBackground(Void... params) {
+            try {
+                URL url = new URL("https://ajax.googleapis.com/ajax/services/feed/load?v=2.0&q=http://habrahabr.ru/rss/hubs/&num=20");
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+                InputStream inputStream = urlConnection.getInputStream();
+                StringBuffer buffer = new StringBuffer();
+                reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line);
+                }
+                resultJson = buffer.toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            JSONObject jsonObject = null;
+            try {
+                jsonObject = new JSONObject(resultJson);
+                jsonObject = jsonObject.getJSONObject("responseData");
+                jsonObject = jsonObject.getJSONObject("feed");
+                JSONArray jArray = jsonObject.getJSONArray("entries");
+                title = new String[jArray.length()];
+                for (int i = 0; i < jArray.length(); i++) {
+                    JSONObject json_message = jArray.getJSONObject(i);
+                    if (json_message != null) {
+                        String ls = json_message.getString("title");
+                        title[i] = ls;
+                    }
+                }
+                content = new String[jArray.length()];
+                for (int i = 0; i < jArray.length(); i++) {
+                    JSONObject json_message = jArray.getJSONObject(i);
+                    if (json_message != null) {
+                        String ls = json_message.getString("content");
+                        Pattern pat = Pattern.compile("<.+>");
+                        Matcher mat = pat.matcher(ls);
+                        ls = mat.replaceAll("");
+                        content[i] = ls;
+                    }
+                }
+                publishProgress(content);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return title;
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            MyListFragment.setContent(values);
+            TextFragment.setContent(values);
+        }
+
+        @Override
+        protected void onPostExecute(String[] strJson) {
+            super.onPostExecute(strJson);
         }
     }
 
@@ -114,26 +186,17 @@ public class MainActivity extends FragmentActivity implements Fragment1.onSomeEv
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (fragment2 != null) {
-            textView = (TextView) findViewById(R.id.textF);
-            text = (TextView) findViewById(R.id.text);
-        }
-    }
-
     private void displayView(int position) {
         Fragment fragment = null;
         switch (position) {
             case 0:
-                fragment = new Fragment1();
+                fragment = new MyListFragment();
                 break;
             case 1:
-                fragment = new Frag2();
+                fragment = new AnimationFragment();
                 break;
             case 2:
-                fragment = new Frag3();
+                fragment = new HideActionBarFragment();
                 break;
         }
         if (fragment != null) {
@@ -166,6 +229,24 @@ public class MainActivity extends FragmentActivity implements Fragment1.onSomeEv
     public void setTitle(CharSequence title) {
         myTitle = title;
         getActionBar().setTitle(myTitle);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (event.isShiftPressed()) {
+            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.fragment1);
+            linearLayout.setBackgroundColor(Color.RED);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (event.isShiftPressed()) {
+            LinearLayout linearLayout = (LinearLayout) findViewById(R.id.fragment1);
+            linearLayout.setBackgroundColor(Color.blue(3));
+        }
+        return true;
     }
 
     @Override

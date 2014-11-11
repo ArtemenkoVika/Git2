@@ -11,7 +11,7 @@ import android.widget.TextView;
 import android.app.ActionBar;
 import com.example.admin.vika.R;
 
-public class Frag3 extends Fragment implements OnClickListener{
+public class HideActionBarFragment extends Fragment implements OnClickListener{
     public TextView txt;
     private Button btn1;
     private Button btn2;
@@ -23,7 +23,7 @@ public class Frag3 extends Fragment implements OnClickListener{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_frag3, container, false);
+        return inflater.inflate(R.layout.fragment_hide_action_bar_fragment, container, false);
     }
 
     @Override

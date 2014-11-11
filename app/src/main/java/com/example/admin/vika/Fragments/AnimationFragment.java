@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import com.example.admin.vika.R;
 
-public class Frag2 extends Fragment {
+public class AnimationFragment extends Fragment {
     private ImageView image1;
     private ImageView image2;
     private ImageView image3;
@@ -24,7 +24,7 @@ public class Frag2 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_frag2, container, false);
+        return inflater.inflate(R.layout.fragment_animation_fragment, container, false);
     }
 
     @Override

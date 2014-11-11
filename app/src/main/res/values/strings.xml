@@ -16,13 +16,19 @@
     <string name="empty">Not date</string>
     <string name="title_activity_my_activity3">MyActivity3</string>
     <string name="textView">TextView</string>
-    <string name="cats">Cats</string>
+    <string name="cats">RSS Reader</string>
     <string-array name="views_array">
-        <item>Cats</item>
+        <item>RSS Reader</item>
         <item>Animation</item>
         <item>Hide ActionBar</item>
     </string-array>
     <string name="menu">Menu</string>
+    <string-array name="cats_array">
+        <item>Немецкий рекс</item>
+        <item>Гавана</item>
+        <item>Австралийская дымчатая кошка</item>
+        <item>Американская жесткошерстная кошка</item>
+    </string-array>
     <string name="rex">ПРОИСХОЖДЕНИЕ\n
                        Эти красавцы появились в\n
                        Восточной Пруссии, но если\n
