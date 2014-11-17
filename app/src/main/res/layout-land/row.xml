@@ -6,12 +6,9 @@
 
     <TextView
         android:id="@+id/option_text"
+        style="@style/CustomText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:textColor="@android:color/background_dark"
-        android:textSize="16dp"
-        android:textStyle="bold" />
+        android:layout_weight="1"/>
 </LinearLayout>

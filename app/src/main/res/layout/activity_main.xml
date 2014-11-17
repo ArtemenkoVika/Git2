@@ -3,24 +3,13 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_blue_bright"
-    tools:context="Activity.MainActivity">
+    android:background="@color/appblue_color"
+    tools:context="com.example.vv.vkreader.Activity.MainActivity">
 
     <FrameLayout
         android:id="@+id/frm"
-        android:background="@android:color/holo_blue_bright"
+        android:background="@color/appblue_color"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></FrameLayout>
-
-    <ListView
-        android:id="@+id/left_drawer"
-        android:layout_width="240dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="#000"
-        android:choiceMode="singleChoice"
-        android:divider="#5e5e5e"
-        android:dividerHeight="1dp"
-        android:listSelector="@drawable/list_selector"/>
 
 </android.support.v4.widget.DrawerLayout>
