@@ -36,6 +36,8 @@ public class TextFragment  extends BaseFragment {
         if (getArguments() != null) {
             imageView = (ImageView) getActivity().findViewById(R.id.imageT);
             textView = (TextView) getActivity().findViewById(R.id.textF);
+			ParseTask mt = new ParseTask();
+            mt.execute();
         }
         return inflater.inflate(R.layout.fragment_text, container, false);
     }
