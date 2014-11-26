@@ -1,12 +1,13 @@
 package com.example.vv.vkreader.Activity;
 
 import android.app.ActionBar;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.vv.vkreader.Fragments.TextFragment;
 import com.example.vv.vkreader.R;
@@ -14,14 +15,15 @@ import com.example.vv.vkreader.R;
 public class TextActivity extends FragmentActivity {
     private Fragment fragment2;
     private ActionBar actionBar;
-    private static final int IDM_BACK = 103;
-    private static final int IDM_FL4 = 104;
+    private TextView textView;
+    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text);
-        setTitle("READER");
+        textView = (TextView) findViewById(R.id.textF);
+        imageView = (ImageView) findViewById(R.id.imageT);
         actionBar = getActionBar();
         actionBar.setIcon(R.drawable.user);
         Bundle extras = getIntent().getExtras();
@@ -35,21 +37,40 @@ public class TextActivity extends FragmentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(Menu.NONE, IDM_BACK, 1, "BACK").setIcon(R.drawable.arrow).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menu.add(Menu.NONE, IDM_FL4, 2, "FL4").setIcon(R.drawable.flower5).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        return super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.text, menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case IDM_BACK:
-                Intent intent = new Intent();
-                intent.setClass(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
+            case R.id.IDM_BACK:
+                MainActivity mainActivity = new MainActivity();
+                mainActivity.onBackPressed();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+            String str1 = String.valueOf(textView.getText());
+            outState.putString("textView", str1);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+            String str1 = savedInstanceState.getString("textView");
+            textView.setText(str1);
+            imageView = (ImageView) getLastCustomNonConfigurationInstance();
+    }
+
+
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        return imageView;
     }
 }

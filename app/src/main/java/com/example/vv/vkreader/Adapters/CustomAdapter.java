@@ -9,51 +9,31 @@ import android.widget.TextView;
 
 import com.example.vv.vkreader.R;
 
-public class CustomAdapter extends ArrayAdapter{
-    private static String[] title;
+public class CustomAdapter extends ArrayAdapter {
     private LayoutInflater inflater;
     private ViewHolder holder;
 
-    public CustomAdapter(Context context) {
-        super(context, android.R.layout.simple_list_item_2, title);
+    public CustomAdapter(Context context, int textViewResourceId, String[] items) {
+        super(context, textViewResourceId, items);
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    @Override
-    public int getCount() {
-        return title.length;
-    }
-
-    @Override
-    public String getItem(int position) {
-        return title[position];
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return 0;
-    }
-
-    public static void setArray(String[] tit) {
-        title = tit;
-    }
-
-    static class ViewHolder {
+    private class ViewHolder {
         public TextView textView;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View view = convertView;
-        if (view == null) {
-            view = inflater.inflate(R.layout.row, null);
-            holder = new ViewHolder();
-            holder.textView = (TextView) view.findViewById(R.id.option_text);
-            view.setTag(holder);
-        } else {
-            holder = (ViewHolder) view.getTag();
-        }
-        holder.textView.setText(title[position]);
+    public View getView(int position, View view, ViewGroup parent) {
+            String item = (String) getItem(position);
+            if (view == null) {
+                view = inflater.inflate(R.layout.row, parent, false);
+                holder = new ViewHolder();
+                holder.textView = (TextView) view.findViewById(R.id.option_text);
+                view.setTag(holder);
+            } else {
+                holder = (ViewHolder) view.getTag();
+            }
+            holder.textView.setText(item);
         return view;
     }
 }

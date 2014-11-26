@@ -1,23 +1,25 @@
 package com.example.vv.vkreader.Fragments;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.vv.vkreader.JavaClasses.GsonClass;
 import com.example.vv.vkreader.R;
 
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 
-public class TextFragment  extends android.support.v4.app.Fragment {
+public class TextFragment  extends BaseFragment {
     public Integer position;
     public static String ARG_POSITION = "param";
-    private static String[] imageContent;
-    private static String[] textContent;
-    private static Integer[] textDate;
+    private HashMap<String, String> map;
+    private MyListFragment.LoadImageFromNetwork ld;
+    private TextView textView;
+    private ImageView imageView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,9 +34,8 @@ public class TextFragment  extends android.support.v4.app.Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         if (getArguments() != null) {
-            imageContent = new GsonClass().getImageContent();
-            textContent = new GsonClass().getTextContent();
-            textDate = new GsonClass().getTextDate();
+            imageView = (ImageView) getActivity().findViewById(R.id.imageT);
+            textView = (TextView) getActivity().findViewById(R.id.textF);
         }
         return inflater.inflate(R.layout.fragment_text, container, false);
     }
@@ -43,16 +44,13 @@ public class TextFragment  extends android.support.v4.app.Fragment {
     public void onStart() {
         super.onStart();
         if (getArguments() != null) {
-            ImageView imageView = (ImageView) getActivity().findViewById(R.id.imageT);
-            TextView textView = (TextView) getActivity().findViewById(R.id.textF);
+            map = (HashMap<String, String>) gs.getArr().get(position);
             imageView.setVisibility(View.INVISIBLE);
-            try {
-                new MyListFragment.LoadImageFromNetwork(imageView).execute(imageContent[position]);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            ld = new LoadImageFromNetwork(imageView);
+            ld.execute(map.get("imageContent"));
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-            textView.setText(textContent[position] + "\n\n" + sdf.format(textDate[position]));
+            textView.setText(map.get("textContent") + "\n\n" +
+                    sdf.format(Integer.parseInt(map.get("textDate"))));
         }
     }
 }
