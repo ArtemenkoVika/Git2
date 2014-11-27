@@ -1,7 +1,6 @@
 package com.example.vv.vkreader.Fragments;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.view.View;

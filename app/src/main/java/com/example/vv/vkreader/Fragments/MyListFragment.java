@@ -46,7 +46,6 @@ public class MyListFragment extends BaseFragment implements OnItemClickListener 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_my_list, container, false);
-
         imageView = (ImageView) getActivity().findViewById(R.id.imageT);
         textView = (TextView) getActivity().findViewById(R.id.textF);
         listView = (ListView) v.findViewById(R.id.myList);
@@ -70,7 +69,7 @@ public class MyListFragment extends BaseFragment implements OnItemClickListener 
         if (fragment2 != null) {
             map = (HashMap<String, String>) gs.getArr().get(position);
             imageView.setVisibility(View.INVISIBLE);
-            ld = new LoadImageFromNetwork(imageView);
+            ld = new LoadImageFromNetwork(imageView, getActivity());
             ld.execute(map.get("imageContent"));
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
             textView.setText(map.get("textContent") + "\n\n" +
