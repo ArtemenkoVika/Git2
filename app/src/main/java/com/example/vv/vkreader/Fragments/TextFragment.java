@@ -44,7 +44,7 @@ public class TextFragment  extends BaseFragment {
     public void onStart() {
         super.onStart();
         if (getArguments() != null) {
-                map = (HashMap<String, String>) gs.getArr().get(9);
+                map = (HashMap<String, String>) gs.getArr().get(position);
                 imageView.setVisibility(View.INVISIBLE);
                 ld = new LoadImageFromNetwork(imageView, getActivity());
                 ld.execute(map.get("imageContent"));
