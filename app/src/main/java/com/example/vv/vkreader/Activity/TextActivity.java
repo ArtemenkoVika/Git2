@@ -45,8 +45,7 @@ public class TextActivity extends FragmentActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.IDM_BACK:
-                MainActivity mainActivity = new MainActivity();
-                mainActivity.onBackPressed();
+                onBackPressed();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
