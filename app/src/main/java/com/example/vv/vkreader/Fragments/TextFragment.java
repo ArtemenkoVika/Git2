@@ -15,7 +15,7 @@ import java.util.HashMap;
 
 public class TextFragment extends BaseFragment {
     public Integer position;
-    public static String ARG_POSITION = "param";
+    public String ARG_POSITION = "param";
     private HashMap<String, String> map;
     private LoadImageFromNetwork ld;
     private TextView textView;

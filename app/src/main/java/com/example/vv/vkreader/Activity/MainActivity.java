@@ -19,8 +19,8 @@ public class MainActivity extends FragmentActivity implements MyListFragment.onS
     private ActionBar actionBar;
     private Fragment fragment1;
     private Fragment fragment2;
-    public static final int ACTION_EDIT = 101;
-    public static final String IDE_EXTRA = "param";
+    public final int ACTION_EDIT = 101;
+    public final String IDE_EXTRA = "param";
     private Intent intent;
     private TextView textView;
     private ImageView imageView;

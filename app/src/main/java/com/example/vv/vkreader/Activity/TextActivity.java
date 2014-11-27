@@ -28,11 +28,11 @@ public class TextActivity extends FragmentActivity {
         actionBar = getActionBar();
         actionBar.setIcon(R.drawable.user);
         Bundle extras = getIntent().getExtras();
-        Integer position = extras.getInt(MainActivity.IDE_EXTRA);
+        Integer position = extras.getInt(new MainActivity().IDE_EXTRA);
         fragment2 = new TextFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.frm2, fragment2).commit();
         Bundle args = new Bundle();
-        args.putInt(TextFragment.ARG_POSITION, position);
+        args.putInt(new TextFragment().ARG_POSITION, position);
         fragment2.setArguments(args);
     }
 
