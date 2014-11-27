@@ -9,7 +9,7 @@ public class GsonClass {
     private String imageContent;
     private String textDate;
     private HashMap<String, String> map = new HashMap<String, String>();
-    private List arr = new ArrayList();
+    private static List arr = new ArrayList();
 
     public GsonClass(String textContent, String textDate, String imageContent) {
         this.textContent = textContent;
@@ -17,7 +17,7 @@ public class GsonClass {
         this.imageContent = imageContent;
     }
 
-    public GsonClass(){
+    public GsonClass() {
     }
 
     public HashMap<String, String> getMap() {

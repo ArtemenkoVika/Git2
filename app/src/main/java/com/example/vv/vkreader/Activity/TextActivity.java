@@ -22,6 +22,7 @@ public class TextActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_text);
+        setTitle("Reader");
         textView = (TextView) findViewById(R.id.textF);
         imageView = (ImageView) findViewById(R.id.imageT);
         actionBar = getActionBar();
@@ -55,18 +56,17 @@ public class TextActivity extends FragmentActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-            String str1 = String.valueOf(textView.getText());
-            outState.putString("textView", str1);
+        String str1 = String.valueOf(textView.getText());
+        outState.putString("textView", str1);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-            String str1 = savedInstanceState.getString("textView");
-            textView.setText(str1);
-            imageView = (ImageView) getLastCustomNonConfigurationInstance();
+        String str1 = savedInstanceState.getString("textView");
+        textView.setText(str1);
+        imageView = (ImageView) getLastCustomNonConfigurationInstance();
     }
-
 
     @Override
     public Object onRetainCustomNonConfigurationInstance() {
