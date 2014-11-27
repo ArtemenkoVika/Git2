@@ -94,7 +94,7 @@ public class BaseFragment extends Fragment {
         }
     }
 
-    public static class LoadImageFromNetwork extends AsyncTask<String, Void, Bitmap> {
+    public class LoadImageFromNetwork extends AsyncTask<String, Void, Bitmap> {
         ImageView imageBitmap;
 
         public LoadImageFromNetwork(ImageView imageBitmap) {
