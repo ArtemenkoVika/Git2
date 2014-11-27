@@ -1,7 +1,6 @@
 package com.example.vv.vkreader.Fragments;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ public class TextFragment  extends BaseFragment {
     public Integer position;
     public static String ARG_POSITION = "param";
     private HashMap<String, String> map;
-    private MyListFragment.LoadImageFromNetwork ld;
+    private LoadImageFromNetwork ld;
     private TextView textView;
     private ImageView imageView;
 
@@ -33,26 +32,25 @@ public class TextFragment  extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_text, container, false);
         if (getArguments() != null) {
             imageView = (ImageView) getActivity().findViewById(R.id.imageT);
             textView = (TextView) getActivity().findViewById(R.id.textF);
-			ParseTask mt = new ParseTask();
-            mt.execute();
         }
-        return inflater.inflate(R.layout.fragment_text, container, false);
+        return v;
     }
 
     @Override
     public void onStart() {
         super.onStart();
         if (getArguments() != null) {
-            map = (HashMap<String, String>) gs.getArr().get(position);
-            imageView.setVisibility(View.INVISIBLE);
-            ld = new LoadImageFromNetwork(imageView);
-            ld.execute(map.get("imageContent"));
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-            textView.setText(map.get("textContent") + "\n\n" +
-                    sdf.format(Integer.parseInt(map.get("textDate"))));
+                map = (HashMap<String, String>) gs.getArr().get(9);
+                imageView.setVisibility(View.INVISIBLE);
+                ld = new LoadImageFromNetwork(imageView, getActivity());
+                ld.execute(map.get("imageContent"));
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                textView.setText(map.get("textContent") + "\n\n" +
+                        sdf.format(Integer.parseInt(map.get("textDate"))));
         }
     }
 }
