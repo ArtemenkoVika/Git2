@@ -14,10 +14,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.vv.vkreader.Adapters.CustomAdapter;
-import com.example.vv.vkreader.JavaClasses.GsonClass;
+import com.example.vv.vkreader.JavaClasses.ListClass;
 import com.example.vv.vkreader.R;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,24 +28,28 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class MyListFragment extends BaseFragment implements OnItemClickListener {
+    public onSomeEventListener someEventListener;
+    private ListClass list;
     private TextView textView;
     private ImageView imageView;
     private ListView listView;
     private Fragment fragment2;
-    public onSomeEventListener someEventListener;
     private HashMap<String, String> map;
     private LoadImageFromNetwork ld;
-    private ParseTask mt;
-    private GsonClass gs;
+    private ParseTask parseTask;
+    private SimpleDateFormat sdf;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
 
     public interface onSomeEventListener {
-        public void someEvent(Integer i);
+        public void someEvent(Integer i, ArrayList arr);
     }
 
     @Override
@@ -66,10 +69,10 @@ public class MyListFragment extends BaseFragment implements OnItemClickListener 
         imageView = (ImageView) getActivity().findViewById(R.id.imageT);
         textView = (TextView) getActivity().findViewById(R.id.textF);
         listView = (ListView) v.findViewById(R.id.myList);
-        mt = new ParseTask();
-        mt.execute();
+        parseTask = new ParseTask();
+        parseTask.execute();
         try {
-            CustomAdapter arrayAdapter = new CustomAdapter(getActivity(), R.layout.row, mt.get());
+            CustomAdapter arrayAdapter = new CustomAdapter(getActivity(), R.layout.row, parseTask.get());
             listView.setAdapter(arrayAdapter);
         } catch (InterruptedException e) {
         } catch (ExecutionException e) {
@@ -80,22 +83,18 @@ public class MyListFragment extends BaseFragment implements OnItemClickListener 
     }
 
     protected class ParseTask extends AsyncTask<Void, Void, String[]> {
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
-        String resultJson = "";
-        String[] title2;
-        List a = new ArrayList();
+        String resultJson;
 
         @Override
         protected String[] doInBackground(Void... params) {
             try {
                 URL url = new URL(getResources().getString(R.string.url));
-                urlConnection = (HttpURLConnection) url.openConnection();
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();
                 InputStream inputStream = urlConnection.getInputStream();
                 StringBuffer buffer = new StringBuffer();
-                reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
                 String line;
                 while ((line = reader.readLine()) != null) {
                     buffer.append(line);
@@ -107,37 +106,11 @@ public class MyListFragment extends BaseFragment implements OnItemClickListener 
             JSONObject jsonObject;
             try {
                 jsonObject = new JSONObject(resultJson);
-                jsonObject = jsonObject.getJSONObject("response");
-                JSONArray jArray = jsonObject.getJSONArray("wall");
-                title2 = new String[jArray.length()];
-                for (int i = 0; i < jArray.length(); i++) {
-                    JSONObject json_message = jArray.getJSONObject(i);
-                    if (json_message != null) {
-                        String text = json_message.getString("text");
-                        Pattern pat = Pattern.compile("<.+?>");
-                        Matcher mat = pat.matcher(text);
-                        mat.find();
-                        int k = mat.start();
-                        String match = mat.replaceAll("\n");
-                        String substring = match.substring(0, k);
-                        String toUp = substring.toUpperCase();
-                        title2[i] = toUp;
-                        JSONObject im = json_message.getJSONObject("attachment");
-                        im = im.getJSONObject("photo");
-                        String urls = im.getString("src_big");
-                        String data = json_message.optString("date").toString();
-                        gs = new GsonClass(match, data, urls);
-                        gs.getMap().put("textContent", gs.getTextContent());
-                        gs.getMap().put("textDate", gs.getTextDate());
-                        gs.getMap().put("imageContent", gs.getImageContent());
-                        a.add(gs.getMap());
-                    }
-                }
-                gs.setArr(a);
+                list = new ListClass(jsonObject);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return title2;
+            return list.title;
         }
 
         @Override
@@ -148,16 +121,27 @@ public class MyListFragment extends BaseFragment implements OnItemClickListener 
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        someEventListener.someEvent(position);
+        someEventListener.someEvent(position, list.getArr());
         fragment2 = getActivity().getSupportFragmentManager().findFragmentById(R.id.details_frag);
         if (fragment2 != null) {
-            map = (HashMap<String, String>) gs.getArr().get(position);
+            map = (HashMap<String, String>) list.getArr().get(position);
             imageView.setVisibility(View.INVISIBLE);
             ld = new LoadImageFromNetwork(imageView, getActivity());
             ld.execute(map.get("imageContent"));
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+            sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
             textView.setText(map.get("textContent") + "\n\n" +
                     sdf.format(Integer.parseInt(map.get("textDate"))));
+        }
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        try {
+            textView.setText(map.get("textContent") + "\n\n" +
+                    sdf.format(Integer.parseInt(map.get("textDate"))));
+            imageView.setImageBitmap(imageT);
+        } catch (NullPointerException e) {
         }
     }
 }

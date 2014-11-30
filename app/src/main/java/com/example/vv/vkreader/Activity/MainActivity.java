@@ -8,22 +8,21 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vv.vkreader.Fragments.MyListFragment;
 import com.example.vv.vkreader.R;
 
+import java.util.ArrayList;
+
 public class MainActivity extends FragmentActivity implements MyListFragment.onSomeEventListener {
+    public final int ACTION_EDIT = 101;
+    public final String IDE_EXTRA = "param";
+    public final String IDE_ARR = "arr";
     private ActionBar actionBar;
     private Fragment fragment1;
     private Fragment fragment2;
-    public final int ACTION_EDIT = 101;
-    public final String IDE_EXTRA = "param";
     private Intent intent;
-    private TextView textView;
-    private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,48 +34,22 @@ public class MainActivity extends FragmentActivity implements MyListFragment.onS
             toast.show();
             MainActivity.this.finish();
         }
-        textView = (TextView) findViewById(R.id.textF);
-        imageView = (ImageView) findViewById(R.id.imageT);
         actionBar = getActionBar();
-        actionBar.setIcon(R.drawable.user);
+        actionBar.setIcon(R.drawable.portfolio);
         fragment1 = new MyListFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.frm, fragment1).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.frm, fragment1).commit();
         fragment2 = getSupportFragmentManager().findFragmentById(R.id.details_frag);
     }
 
     @Override
-    public void someEvent(Integer position) {
+    public void someEvent(Integer position, ArrayList arr) {
         if (fragment2 == null) {
             intent = new Intent();
             intent.putExtra(IDE_EXTRA, position);
+            intent.putExtra(IDE_ARR, arr);
             intent.setClass(this, TextActivity.class);
             startActivityForResult(intent, ACTION_EDIT);
         }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (fragment2 != null) {
-            String str1 = String.valueOf(textView.getText());
-            outState.putString("textView", str1);
-        }
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        if (fragment2 != null) {
-            String str1 = savedInstanceState.getString("textView");
-            textView.setText(str1);
-            imageView = (ImageView) getLastCustomNonConfigurationInstance();
-        }
-    }
-
-
-    @Override
-    public Object onRetainCustomNonConfigurationInstance() {
-        return imageView;
     }
 
     public boolean isOnline() {

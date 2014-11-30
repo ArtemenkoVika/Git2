@@ -7,38 +7,41 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.vv.vkreader.JavaClasses.GsonClass;
 import com.example.vv.vkreader.R;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TextFragment extends BaseFragment {
+    public final String ARG_POSITION = "param";
+    public final String ARG_ARR = "paramArr";
     public Integer position;
-    public String ARG_POSITION = "param";
     private HashMap<String, String> map;
     private LoadImageFromNetwork ld;
     private TextView textView;
     private ImageView imageView;
-    private GsonClass gs;
+    private SimpleDateFormat sdf;
+    private ArrayList arrayList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         if (getArguments() != null) {
-            Bundle param = getArguments();
-            position = param.getInt(ARG_POSITION);
+            savedInstanceState = getArguments();
+            position = savedInstanceState.getInt(ARG_POSITION);
+            arrayList = savedInstanceState.getStringArrayList(ARG_ARR);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_text, container, false);
-        if (getArguments() != null) {
-            gs = new GsonClass();
-        }
-        return v;
+        View view = inflater.inflate(R.layout.fragment_text, container, false);
+        imageView = (ImageView) getActivity().findViewById(R.id.imageT);
+        textView = (TextView) getActivity().findViewById(R.id.textF);
+        return view;
     }
 
     @Override
@@ -47,13 +50,24 @@ public class TextFragment extends BaseFragment {
         if (getArguments() != null) {
             imageView = (ImageView) getActivity().findViewById(R.id.imageT);
             textView = (TextView) getActivity().findViewById(R.id.textF);
-            map = (HashMap<String, String>) gs.getArr().get(position);
+            map = (HashMap<String, String>) arrayList.get(position);
             imageView.setVisibility(View.INVISIBLE);
             ld = new LoadImageFromNetwork(imageView, getActivity());
             ld.execute(map.get("imageContent"));
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+            sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
             textView.setText(map.get("textContent") + "\n\n" +
                     sdf.format(Integer.parseInt(map.get("textDate"))));
+        }
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        try {
+            textView.setText(map.get("textContent") + "\n\n" +
+                    sdf.format(Integer.parseInt(map.get("textDate"))));
+            imageView.setImageBitmap(imageT);
+        } catch (NullPointerException e) {
         }
     }
 }

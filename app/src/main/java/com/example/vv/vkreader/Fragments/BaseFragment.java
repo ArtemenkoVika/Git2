@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import java.io.InputStream;
 
 public class BaseFragment extends Fragment {
+    protected Bitmap imageT;
 
     protected class LoadImageFromNetwork extends AsyncTask<String, Void, Bitmap> {
         ImageView imageBitmap;
@@ -24,7 +25,6 @@ public class BaseFragment extends Fragment {
         }
 
         protected Bitmap doInBackground(String... url) {
-            Bitmap imageT = null;
             try {
                 //urlI = url[0];
                 //imageLoader = ImageLoader.getInstance();
