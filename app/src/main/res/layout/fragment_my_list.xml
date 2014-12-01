@@ -3,9 +3,9 @@
     android:id="@+id/fragment1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/applist_color"
+    android:background="@color/appList"
     android:orientation="horizontal"
-    tools:context="com.example.vv.vkreader.Fragments.MyListFragment">
+    tools:context="com.example.admin.vkreader.fragments.MyListFragment">
 
     <ListView
         android:id="@+id/myList"
