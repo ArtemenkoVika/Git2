@@ -1,6 +1,7 @@
 package com.example.admin.vkreader.fragments;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,12 +9,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin.vkreader.R;
+import com.example.admin.vkreader.asyncTask.LoadImageFromNetwork;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 
-public class TextFragment extends BaseFragment {
+public class TextFragment extends Fragment {
     public final String ARG_POSITION = "param";
     public final String ARG_ARR = "paramArr";
     public Integer position;
@@ -67,8 +70,12 @@ public class TextFragment extends BaseFragment {
             map = (HashMap<String, String>) arrayList.get(position);
             textView.setText(map.get("textContent") + "\n\n" +
                     sdf.format(Integer.parseInt(map.get("textDate"))));
-            imageView.setImageBitmap(imageT);
+            imageView.setImageBitmap(ld.get());
         } catch (NullPointerException e) {
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
     }
 }

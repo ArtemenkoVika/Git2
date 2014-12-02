@@ -1,7 +1,6 @@
 package com.example.admin.vkreader.fragments;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,24 +15,16 @@ import android.widget.TextView;
 
 import com.example.admin.vkreader.R;
 import com.example.admin.vkreader.adapters.CustomAdapter;
-import com.example.admin.vkreader.javaClasses.ListClass;
+import com.example.admin.vkreader.asyncTask.LoadImageFromNetwork;
+import com.example.admin.vkreader.asyncTask.ParseTask;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
-public class MyListFragment extends BaseFragment implements AdapterView.OnItemClickListener, View.OnClickListener {
+public class MyListFragment extends Fragment implements AdapterView.OnItemClickListener, View.OnClickListener {
     public onSomeEventListener someEventListener;
-    private ListClass list;
     private TextView textView;
     private ImageView imageView;
     private ListView listView;
@@ -78,7 +69,7 @@ public class MyListFragment extends BaseFragment implements AdapterView.OnItemCl
             textView.setOnClickListener(this);
         }
         listView = (ListView) v.findViewById(R.id.myList);
-        parseTask = new ParseTask();
+        parseTask = new ParseTask(getResources().getString(R.string.url));
         parseTask.execute();
         try {
             CustomAdapter arrayAdapter = new CustomAdapter(getActivity(), R.layout.row, parseTask.get());
@@ -91,50 +82,13 @@ public class MyListFragment extends BaseFragment implements AdapterView.OnItemCl
         return v;
     }
 
-    protected class ParseTask extends AsyncTask<Void, Void, String[]> {
-        String resultJson;
-
-        @Override
-        protected String[] doInBackground(Void... params) {
-            try {
-                URL url = new URL(getResources().getString(R.string.url));
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line);
-                }
-                resultJson = buffer.toString();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            JSONObject jsonObject;
-            try {
-                jsonObject = new JSONObject(resultJson);
-                list = new ListClass(jsonObject);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return list.title;
-        }
-
-        @Override
-        protected void onPostExecute(String[] strJson) {
-            super.onPostExecute(strJson);
-        }
-    }
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        someEventListener.someEvent(position, list.getArr());
+        someEventListener.someEvent(position, parseTask.getArr());
         fragment2 = getActivity().getSupportFragmentManager().findFragmentById(R.id.details_frag);
         if (fragment2 != null) {
             frameLayout.setVisibility(View.GONE);
-            map = (HashMap<String, String>) list.getArr().get(position);
+            map = (HashMap<String, String>) parseTask.getArr().get(position);
             imageView.setVisibility(View.INVISIBLE);
             ld = new LoadImageFromNetwork(imageView, getActivity());
             ld.execute(map.get("imageContent"));
@@ -155,8 +109,12 @@ public class MyListFragment extends BaseFragment implements AdapterView.OnItemCl
         try {
             textView.setText(map.get("textContent") + "\n\n" +
                     sdf.format(Integer.parseInt(map.get("textDate"))));
-            imageView.setImageBitmap(imageT);
+            imageView.setImageBitmap(ld.get());
         } catch (NullPointerException e) {
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
     }
 }

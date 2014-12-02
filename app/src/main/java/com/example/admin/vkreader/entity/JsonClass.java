@@ -1,4 +1,4 @@
-package com.example.admin.vkreader.javaClasses;
+package com.example.admin.vkreader.entity;
 
 import java.util.HashMap;
 
