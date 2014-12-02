@@ -9,8 +9,7 @@ import android.widget.TextView;
 
 import com.example.admin.vkreader.R;
 
-
-public class CustomAdapter extends ArrayAdapter {
+public class CustomAdapter extends ArrayAdapter{
     private LayoutInflater inflater;
     private ViewHolder holder;
 
@@ -38,4 +37,3 @@ public class CustomAdapter extends ArrayAdapter {
         return view;
     }
 }
-

@@ -3,9 +3,9 @@ package com.example.admin.vkreader.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,7 +19,6 @@ import java.util.ArrayList;
 
 
 public class MainActivity extends FragmentActivity implements MyListFragment.onSomeEventListener {
-
     public final int ACTION_EDIT = 101;
     private final int IDM_ARROW = 100;
     public final String IDE_EXTRA = "param";
@@ -57,13 +56,9 @@ public class MainActivity extends FragmentActivity implements MyListFragment.onS
     }
 
     public boolean isOnline() {
-        String cs = Context.CONNECTIVITY_SERVICE;
-        ConnectivityManager cm = (ConnectivityManager)
-                getSystemService(cs);
-        if (cm.getActiveNetworkInfo() == null) {
-            return false;
-        }
-        return cm.getActiveNetworkInfo().isConnectedOrConnecting();
+        ConnectivityManager manager = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        return manager.getActiveNetworkInfo().isAvailable();
     }
 
     @Override
