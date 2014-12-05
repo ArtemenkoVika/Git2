@@ -16,7 +16,12 @@ public class LoadImageFromNetwork extends AsyncTask<String, Void, Bitmap> {
     //ImageLoader imageLoader;
     //Context context;
 
+<<<<<<< HEAD
     public LoadImageFromNetwork(ImageView imageBitmap, Context context) {
+=======
+    public LoadImageFromNetwork(ImageView imageBitmap,
+                                Context context) {
+>>>>>>> 10e0bed851175f49191d7278391a48d131d764d5
         this.imageBitmap = imageBitmap;
         //this.context = context;
     }

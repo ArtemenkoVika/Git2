@@ -88,6 +88,10 @@ public class MyListFragment extends Fragment implements AdapterView.OnItemClickL
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         someEventListener.someEvent(position, parseTask.getArr());
+<<<<<<< HEAD
+=======
+        fragment2 = getActivity().getSupportFragmentManager().findFragmentById(R.id.details_frag);
+>>>>>>> 10e0bed851175f49191d7278391a48d131d764d5
         if (fragment2 != null) {
             frameLayout.setVisibility(View.GONE);
             map = (HashMap<String, String>) parseTask.getArr().get(position);
