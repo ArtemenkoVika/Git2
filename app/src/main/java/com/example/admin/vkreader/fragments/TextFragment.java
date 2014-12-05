@@ -29,8 +29,8 @@ public class TextFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        setRetainInstance(true);
         super.onCreate(savedInstanceState);
+		setRetainInstance(true);
         if (getArguments() != null) {
             savedInstanceState = getArguments();
             position = savedInstanceState.getInt(ARG_POSITION);
