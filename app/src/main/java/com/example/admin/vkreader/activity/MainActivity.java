@@ -1,9 +1,12 @@
 package com.example.admin.vkreader.activity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
@@ -14,9 +17,9 @@ import android.widget.Toast;
 
 import com.example.admin.vkreader.R;
 import com.example.admin.vkreader.fragments.MyListFragment;
+import com.example.admin.vkreader.service.UpdateService;
 
 import java.util.ArrayList;
-
 
 public class MainActivity extends FragmentActivity implements MyListFragment.onSomeEventListener {
     public final int ACTION_EDIT = 101;
@@ -27,6 +30,8 @@ public class MainActivity extends FragmentActivity implements MyListFragment.onS
     private Fragment fragment2;
     private Intent intent;
     private FrameLayout frameLayout;
+    private AlarmManager alarmManager;
+    private PendingIntent pendingIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +47,19 @@ public class MainActivity extends FragmentActivity implements MyListFragment.onS
         fragment1 = new MyListFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.frm, fragment1).commit();
         fragment2 = getSupportFragmentManager().findFragmentById(R.id.details_frag);
+        intent = new Intent(MainActivity.this, UpdateService.class);
+        pendingIntent = PendingIntent.getService(getApplicationContext(), 0,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        long time = SystemClock.elapsedRealtime() + 5000;
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, time,
+                30000, pendingIntent);
     }
 
     @Override
     public void someEvent(Integer position, ArrayList arr) {
         if (fragment2 == null) {
-            intent = new Intent();
+            Intent intent = new Intent();
             intent.putExtra(IDE_EXTRA, position);
             intent.putExtra(IDE_ARR, arr);
             intent.setClass(this, TextActivity.class);
@@ -99,5 +111,12 @@ public class MainActivity extends FragmentActivity implements MyListFragment.onS
             if (visibility == View.VISIBLE) frameLayout.setVisibility(View.VISIBLE);
             if (visibility == View.GONE) frameLayout.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        alarmManager.cancel(pendingIntent);
+        this.stopService(intent);
     }
 }

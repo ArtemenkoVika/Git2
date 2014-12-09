@@ -3,12 +3,12 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/appBlue"
+    android:background="@color/app_blue"
     tools:context="com.example.admin.vkreader.activity.MainActivity">
 
     <FrameLayout
         android:id="@+id/frm"
-        android:background="@color/appBlue"
+        android:background="@color/app_blue"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></FrameLayout>
 

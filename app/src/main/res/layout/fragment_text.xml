@@ -3,12 +3,12 @@
     android:id="@+id/fragment2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/appTheme"
+    android:background="@color/app_theme"
     android:orientation="vertical"
     tools:context="com.example.admin.vkreader.fragments.TextFragment">
 
     <ImageView
-        android:id="@+id/imageT"
+        android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="10dp"
@@ -23,13 +23,12 @@
         android:layout_weight="1">
 
         <TextView
-            android:id="@+id/textF"
+            android:id="@+id/text"
             style="@style/TextStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0"
-            android:isScrollContainer="true"
-            android:textColor="@color/appBlue" />
+            android:isScrollContainer="true" />
 
     </ScrollView>
 

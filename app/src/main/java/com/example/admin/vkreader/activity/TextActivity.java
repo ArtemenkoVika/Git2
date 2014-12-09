@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+
 import com.example.admin.vkreader.R;
 import com.example.admin.vkreader.fragments.TextFragment;
 

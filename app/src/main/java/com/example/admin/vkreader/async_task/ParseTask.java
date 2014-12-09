@@ -1,4 +1,4 @@
-package com.example.admin.vkreader.asyncTask;
+package com.example.admin.vkreader.async_task;
 
 import android.os.AsyncTask;
 
@@ -17,10 +17,10 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ParseTask extends AsyncTask<Void, Void, String[]> {
+public class ParseTask extends AsyncTask<Void, Void, ArrayList> {
+    public ArrayList<String> title;
     private String resultJson;
     private String stringUrl;
-    public String[] title;
     private ArrayList arr = new ArrayList();
 
     public ParseTask(String stringUrl) {
@@ -32,7 +32,7 @@ public class ParseTask extends AsyncTask<Void, Void, String[]> {
     }
 
     @Override
-    protected String[] doInBackground(Void... params) {
+    protected ArrayList doInBackground(Void... params) {
         try {
             URL url = new URL(stringUrl);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -46,11 +46,10 @@ public class ParseTask extends AsyncTask<Void, Void, String[]> {
                 buffer.append(line);
             }
             resultJson = buffer.toString();
-            JSONObject jsonObject;
-            jsonObject = new JSONObject(resultJson);
+            JSONObject jsonObject = new JSONObject(resultJson);
             jsonObject = jsonObject.getJSONObject("response");
             JSONArray jArray = jsonObject.getJSONArray("wall");
-            title = new String[jArray.length()];
+            title = new ArrayList();
             for (int i = 0; i < jArray.length(); i++) {
                 JSONObject json_message = jArray.getJSONObject(i);
                 if (json_message != null) {
@@ -61,7 +60,7 @@ public class ParseTask extends AsyncTask<Void, Void, String[]> {
                     int k = mat.start();
                     String match = mat.replaceAll("\n");
                     String substring = match.substring(0, k);
-                    title[i] = substring;
+                    title.add(substring);
                     JSONObject im = json_message.getJSONObject("attachment");
                     im = im.getJSONObject("photo");
                     String urls = im.getString("src_big");
@@ -82,7 +81,7 @@ public class ParseTask extends AsyncTask<Void, Void, String[]> {
     }
 
     @Override
-    protected void onPostExecute(String[] strJson) {
+    protected void onPostExecute(ArrayList strJson) {
         super.onPostExecute(strJson);
     }
 }

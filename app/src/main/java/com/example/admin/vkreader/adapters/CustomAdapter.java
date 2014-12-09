@@ -9,11 +9,13 @@ import android.widget.TextView;
 
 import com.example.admin.vkreader.R;
 
-public class CustomAdapter extends ArrayAdapter{
+import java.util.List;
+
+public class CustomAdapter extends ArrayAdapter {
     private LayoutInflater inflater;
     private ViewHolder holder;
 
-    public CustomAdapter(Context context, int textViewResourceId, String[] items) {
+    public CustomAdapter(Context context, int textViewResourceId, List items) {
         super(context, textViewResourceId, items);
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
