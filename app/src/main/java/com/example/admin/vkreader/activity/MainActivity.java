@@ -50,10 +50,11 @@ public class MainActivity extends FragmentActivity implements MyListFragment.onS
         intent = new Intent(MainActivity.this, UpdateService.class);
         pendingIntent = PendingIntent.getService(getApplicationContext(), 0,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        long time = SystemClock.elapsedRealtime() + 5000;
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        long time = SystemClock.elapsedRealtime() + 5000;
         alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, time,
                 30000, pendingIntent);
+
     }
 
     @Override

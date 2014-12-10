@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.admin.vkreader.R;
 import com.example.admin.vkreader.adapters.CustomAdapter;
@@ -58,7 +59,7 @@ public class MyListFragment extends BaseFragment implements AdapterView.OnItemCl
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_my_list, container, false);
+        View viewList = inflater.inflate(R.layout.fragment_my_list, container, false);
         imageView = (ImageView) getActivity().findViewById(R.id.image);
         textView = (TextView) getActivity().findViewById(R.id.text);
         frameLayout = (FrameLayout) getActivity().findViewById(R.id.frm);
@@ -68,34 +69,38 @@ public class MyListFragment extends BaseFragment implements AdapterView.OnItemCl
             linearLayout.setOnClickListener(this);
             textView.setOnClickListener(this);
         }
-        listView = (ListView) v.findViewById(R.id.my_list);
+        listView = (ListView) viewList.findViewById(R.id.my_list);
         parseTask = new ParseTask(getResources().getString(R.string.url));
         parseTask.execute();
         try {
             arrayAdapter = new CustomAdapter(getActivity(), R.layout.row, parseTask.get());
             listView.setAdapter(arrayAdapter);
         } catch (InterruptedException e) {
+            Toast.makeText(getActivity(), "Please wait", Toast.LENGTH_LONG).show();
         } catch (ExecutionException e) {
         } catch (NullPointerException e) {
         }
-        arrayAdapter. setNotifyOnChange(true);
+        arrayList = parseTask.getArr();
+        arrayAdapter.setNotifyOnChange(true);
         listView.setOnItemClickListener(this);
-        return v;
+        return viewList;
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         someEventListener.someEvent(position, parseTask.getArr());
         if (fragment2 != null) {
-            frameLayout.setVisibility(View.GONE);
-            arrayList = parseTask.getArr();
-            if (UpdateService.arrayUpdate != null){
-                for (int i = 0; i < UpdateService.arrayUpdate.size(); i++) {
-                    arrayList.add(UpdateService.arrayUpdate.get(i));
+            try {
+                frameLayout.setVisibility(View.GONE);
+                if (UpdateService.arrayUpdate != null) {
+                    for (int i = 0; i < UpdateService.arrayUpdate.size(); i++) {
+                        arrayList.add(UpdateService.arrayUpdate.get(i));
+                    }
                 }
+                map = (HashMap<String, String>) arrayList.get(position);
+                click(textView, imageView, map);
+            } catch (NullPointerException e) {
             }
-            map = (HashMap<String, String>) arrayList.get(position);
-            click(textView, imageView, map);
         }
     }
 
@@ -107,6 +112,11 @@ public class MyListFragment extends BaseFragment implements AdapterView.OnItemCl
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        rotation(textView, imageView);
+        try {
+            textView.setText(map.get("textContent") + "\n\n" +
+                    sdf.format(Integer.parseInt(map.get("textDate"))));
+            imageView.setImageBitmap(ld.image);
+        } catch (NullPointerException e) {
+        }
     }
 }

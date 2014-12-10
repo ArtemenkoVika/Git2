@@ -24,13 +24,4 @@ public class BaseFragment extends Fragment {
         textView.setText(map.get("textContent") + "\n\n" +
                 sdf.format(Integer.parseInt(map.get("textDate"))));
     }
-
-    public void rotation(TextView textView, ImageView imageView){
-        try {
-            textView.setText(map.get("textContent") + "\n\n" +
-                    sdf.format(Integer.parseInt(map.get("textDate"))));
-            imageView.setImageBitmap(ld.image);
-        } catch (NullPointerException e) {
-        }
-    }
 }

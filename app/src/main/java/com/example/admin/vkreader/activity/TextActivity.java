@@ -23,10 +23,10 @@ public class TextActivity extends FragmentActivity {
         ArrayList arr = savedInstanceState.getStringArrayList(new MainActivity().IDE_ARR);
         fragment2 = new TextFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.frm2, fragment2).commit();
-        Bundle args = new Bundle();
-        args.putInt(new TextFragment().ARG_POSITION, position);
-        args.putStringArrayList(new TextFragment().ARG_ARR, arr);
-        fragment2.setArguments(args);
+        //Bundle args = new Bundle();
+        savedInstanceState.putInt(new TextFragment().ARG_POSITION, position);
+        savedInstanceState.putStringArrayList(new TextFragment().ARG_ARR, arr);
+        fragment2.setArguments(savedInstanceState);
     }
 
     @Override

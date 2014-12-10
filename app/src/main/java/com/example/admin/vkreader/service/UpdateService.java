@@ -50,12 +50,6 @@ public class UpdateService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (count != 0) {
-            Toast.makeText(this, "APPLICATION UPDATE!", Toast.LENGTH_LONG).show();
-            manager.cancel(mUpdateId);
-            showNotification(getResources().getString(R.string.ticker2),
-                    getResources().getString(R.string.contentTitle2),
-                    getResources().getString(R.string.contentText2), mUpdateId);
-            manager.cancel(mUpdateId);
             ParseTask parseTask = new ParseTask(getResources().getString(R.string.url2));
             parseTask.execute();
             try {
@@ -64,11 +58,17 @@ public class UpdateService extends Service {
                     arrayUpdate = parseTask.getArr();
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Toast.makeText(this, "Please wait", Toast.LENGTH_LONG).show();
             } catch (ExecutionException e) {
                 e.printStackTrace();
             } catch (NullPointerException e) {
             }
+            Toast.makeText(this, "APPLICATION UPDATE!", Toast.LENGTH_LONG).show();
+            manager.cancel(mUpdateId);
+            showNotification(getResources().getString(R.string.ticker2),
+                    getResources().getString(R.string.contentTitle2),
+                    getResources().getString(R.string.contentText2), mUpdateId);
+            manager.cancel(mUpdateId);
         }
         count++;
         return Service.START_NOT_STICKY;
