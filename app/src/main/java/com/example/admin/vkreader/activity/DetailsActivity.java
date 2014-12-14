@@ -7,25 +7,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.admin.vkreader.R;
-import com.example.admin.vkreader.fragments.TextFragment;
+import com.example.admin.vkreader.fragments.DetailsFragment;
 
-import java.util.ArrayList;
-
-public class TextActivity extends FragmentActivity {
+public class DetailsActivity extends FragmentActivity {
     private Fragment fragment2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_text);
+        setContentView(R.layout.activity_details);
         savedInstanceState = getIntent().getExtras();
         Integer position = savedInstanceState.getInt(new MainActivity().IDE_EXTRA);
-        ArrayList arr = savedInstanceState.getStringArrayList(new MainActivity().IDE_ARR);
-        fragment2 = new TextFragment();
+        fragment2 = new DetailsFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.frm2, fragment2).commit();
-        //Bundle args = new Bundle();
-        savedInstanceState.putInt(new TextFragment().ARG_POSITION, position);
-        savedInstanceState.putStringArrayList(new TextFragment().ARG_ARR, arr);
+        savedInstanceState.putInt(new DetailsFragment().ARG_POSITION, position);
         fragment2.setArguments(savedInstanceState);
     }
 

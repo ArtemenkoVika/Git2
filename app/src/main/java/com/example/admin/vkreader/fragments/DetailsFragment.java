@@ -1,6 +1,5 @@
 package com.example.admin.vkreader.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,21 +8,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin.vkreader.R;
-import com.example.admin.vkreader.service.UpdateService;
+import com.example.admin.vkreader.patterns.Singleton;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TextFragment extends BaseFragment {
-    public final Context context = getActivity();
+public class DetailsFragment extends BaseFragment {
     public final String ARG_POSITION = "param";
-    public final String ARG_ARR = "paramArr";
     public Integer position;
-    private static ArrayList list;
     private TextView textView;
     private ImageView imageView;
     private HashMap<String, String> map;
-    private ArrayList arrayList;
+    private Singleton singleton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,17 +26,14 @@ public class TextFragment extends BaseFragment {
         if (getArguments() != null) {
             savedInstanceState = getArguments();
             position = savedInstanceState.getInt(ARG_POSITION);
-            arrayList = savedInstanceState.getStringArrayList(ARG_ARR);
-            if (list != null) {
-                arrayList = list;
-            }
+            singleton = Singleton.getInstance();
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_text, container, false);
+        View view = inflater.inflate(R.layout.fragment_details, container, false);
         imageView = (ImageView) view.findViewById(R.id.image);
         textView = (TextView) view.findViewById(R.id.text);
         return view;
@@ -51,13 +43,8 @@ public class TextFragment extends BaseFragment {
     public void onStart() {
         super.onStart();
         try {
-            if (UpdateService.arrayUpdate != null) {
-                for (int i = 0; i < UpdateService.arrayUpdate.size(); i++) {
-                    arrayList.add(UpdateService.arrayUpdate.get(i));
-                }
-                list = arrayList;
-            }
-            map = (HashMap<String, String>) arrayList.get(position);
+            map = (HashMap<String, String>) singleton.getArrayList().get(position);
+            System.out.println(singleton.getArrayList().size());
             click(textView, imageView, map);
         } catch (NullPointerException e) {
         }

@@ -9,42 +9,44 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
 import android.widget.Toast;
 
 import com.example.admin.vkreader.R;
-import com.example.admin.vkreader.activity.MainActivity;
+import com.example.admin.vkreader.activity.PendingActivityStart;
+import com.example.admin.vkreader.activity.ResultNotificationActivity;
 import com.example.admin.vkreader.async_task.ParseTask;
-import com.example.admin.vkreader.fragments.MyListFragment;
+import com.example.admin.vkreader.patterns.Singleton;
 
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class UpdateService extends Service {
-    public static ArrayList arrayUpdate;
     private final int mNotificationId = 001;
     private final int mUpdateId = 002;
+    private int count;
     private NotificationManager manager;
     private PendingIntent resultPendingIntent;
-    private int count;
+    private PendingIntent pendingIntentStart;
+    private Singleton singleton;
 
     @Override
     public void onCreate() {
         Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
+        singleton = Singleton.getInstance();
         count = 0;
         manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
         Intent notificationIntent = new Intent(this,
-                MainActivity.class);
-        notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK).addFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK);
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addParentStack(MainActivity.class);
-        stackBuilder.addNextIntent(notificationIntent);
-        resultPendingIntent = stackBuilder.getPendingIntent(0,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+                ResultNotificationActivity.class);
+        resultPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
+                notificationIntent, 0);
+
+        Intent intent = new Intent(this, PendingActivityStart.class);
+        pendingIntentStart = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+
         showNotification(getResources().getString(R.string.ticker),
                 getResources().getString(R.string.contentTitle),
-                getResources().getString(R.string.contentText), mNotificationId);
+                getResources().getString(R.string.contentText), mNotificationId,
+                pendingIntentStart);
     }
 
     @Override
@@ -54,8 +56,8 @@ public class UpdateService extends Service {
             parseTask.execute();
             try {
                 for (int i = 0; i < parseTask.get().size(); i++) {
-                    MyListFragment.arrayAdapter.add(parseTask.get().get(i));
-                    arrayUpdate = parseTask.getArr();
+                    singleton.getArrayAdapter().add(parseTask.get().get(i));
+                    singleton.getArrayList().add(parseTask.getArr().get(i));
                 }
             } catch (InterruptedException e) {
                 Toast.makeText(this, "Please wait", Toast.LENGTH_LONG).show();
@@ -63,12 +65,11 @@ public class UpdateService extends Service {
                 e.printStackTrace();
             } catch (NullPointerException e) {
             }
-            Toast.makeText(this, "APPLICATION UPDATE!", Toast.LENGTH_LONG).show();
             manager.cancel(mUpdateId);
             showNotification(getResources().getString(R.string.ticker2),
                     getResources().getString(R.string.contentTitle2),
-                    getResources().getString(R.string.contentText2), mUpdateId);
-            manager.cancel(mUpdateId);
+                    getResources().getString(R.string.contentText2), mUpdateId, resultPendingIntent);
+            Toast.makeText(this, "APPLICATION UPDATE!", Toast.LENGTH_LONG).show();
         }
         count++;
         return Service.START_NOT_STICKY;
@@ -85,12 +86,13 @@ public class UpdateService extends Service {
         return null;
     }
 
-    public void showNotification(String ticker, String contentTitle, String contentText, int id) {
+    public void showNotification(String ticker, String contentTitle, String contentText, int id,
+                                 PendingIntent pendingIntent) {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.portfolio)
                 .setAutoCancel(true)
                 .setTicker(ticker)
-                .setContentIntent(resultPendingIntent)
+                .setContentIntent(pendingIntent)
                 .setWhen(System.currentTimeMillis())
                 .setContentTitle(contentTitle)
                 .setContentText(contentText)

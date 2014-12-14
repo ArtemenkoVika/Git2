@@ -21,7 +21,7 @@
 
         <fragment
             android:id="@+id/details_frag"
-            class="com.example.admin.vkreader.fragments.TextFragment"
+            class="com.example.admin.vkreader.fragments.DetailsFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="2"

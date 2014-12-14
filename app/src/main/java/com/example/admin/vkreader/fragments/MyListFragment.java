@@ -17,14 +17,12 @@ import android.widget.Toast;
 import com.example.admin.vkreader.R;
 import com.example.admin.vkreader.adapters.CustomAdapter;
 import com.example.admin.vkreader.async_task.ParseTask;
-import com.example.admin.vkreader.service.UpdateService;
+import com.example.admin.vkreader.patterns.Singleton;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 public class MyListFragment extends BaseFragment implements AdapterView.OnItemClickListener, View.OnClickListener {
-    public static CustomAdapter arrayAdapter;
     public onSomeEventListener someEventListener;
     private TextView textView;
     private ImageView imageView;
@@ -34,7 +32,7 @@ public class MyListFragment extends BaseFragment implements AdapterView.OnItemCl
     private ParseTask parseTask;
     private FrameLayout frameLayout;
     private LinearLayout linearLayout;
-    private ArrayList arrayList;
+    private Singleton singleton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,7 +41,7 @@ public class MyListFragment extends BaseFragment implements AdapterView.OnItemCl
     }
 
     public interface onSomeEventListener {
-        public void someEvent(Integer i, ArrayList arr);
+        public void someEvent(Integer i);
     }
 
     @Override
@@ -60,6 +58,7 @@ public class MyListFragment extends BaseFragment implements AdapterView.OnItemCl
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View viewList = inflater.inflate(R.layout.fragment_my_list, container, false);
+        singleton = Singleton.getInstance();
         imageView = (ImageView) getActivity().findViewById(R.id.image);
         textView = (TextView) getActivity().findViewById(R.id.text);
         frameLayout = (FrameLayout) getActivity().findViewById(R.id.frm);
@@ -73,31 +72,27 @@ public class MyListFragment extends BaseFragment implements AdapterView.OnItemCl
         parseTask = new ParseTask(getResources().getString(R.string.url));
         parseTask.execute();
         try {
-            arrayAdapter = new CustomAdapter(getActivity(), R.layout.row, parseTask.get());
-            listView.setAdapter(arrayAdapter);
+            singleton.setArrayAdapter(new CustomAdapter(getActivity(), R.layout.row, parseTask.get()));
+            listView.setAdapter(singleton.getArrayAdapter());
         } catch (InterruptedException e) {
             Toast.makeText(getActivity(), "Please wait", Toast.LENGTH_LONG).show();
         } catch (ExecutionException e) {
         } catch (NullPointerException e) {
         }
-        arrayList = parseTask.getArr();
-        arrayAdapter.setNotifyOnChange(true);
+        if (singleton.getArrayList() == null) singleton.setArrayList(parseTask.getArr());
+        singleton.getArrayAdapter().setNotifyOnChange(true);
         listView.setOnItemClickListener(this);
         return viewList;
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        someEventListener.someEvent(position, parseTask.getArr());
+        someEventListener.someEvent(position);
         if (fragment2 != null) {
             try {
                 frameLayout.setVisibility(View.GONE);
-                if (UpdateService.arrayUpdate != null) {
-                    for (int i = 0; i < UpdateService.arrayUpdate.size(); i++) {
-                        arrayList.add(UpdateService.arrayUpdate.get(i));
-                    }
-                }
-                map = (HashMap<String, String>) arrayList.get(position);
+                map = (HashMap<String, String>) singleton.getArrayList().get(position);
+                System.out.println(singleton.getArrayList().size());
                 click(textView, imageView, map);
             } catch (NullPointerException e) {
             }

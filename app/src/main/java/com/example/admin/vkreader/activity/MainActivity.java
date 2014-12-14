@@ -17,32 +17,32 @@ import android.widget.Toast;
 
 import com.example.admin.vkreader.R;
 import com.example.admin.vkreader.fragments.MyListFragment;
+import com.example.admin.vkreader.patterns.Singleton;
 import com.example.admin.vkreader.service.UpdateService;
-
-import java.util.ArrayList;
 
 public class MainActivity extends FragmentActivity implements MyListFragment.onSomeEventListener {
     public final int ACTION_EDIT = 101;
     private final int IDM_ARROW = 100;
     public final String IDE_EXTRA = "param";
-    public final String IDE_ARR = "arr";
-    private Fragment fragment1;
+    private MyListFragment fragment1;
     private Fragment fragment2;
     private Intent intent;
     private FrameLayout frameLayout;
     private AlarmManager alarmManager;
     private PendingIntent pendingIntent;
+    private Singleton singleton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Context context = getApplication();
-        Toast toast = Toast.makeText(context, "Нет соединения с интернетом!", Toast.LENGTH_LONG);
+        Toast toast = Toast.makeText(getApplication(), "Нет соединения с интернетом!",
+                Toast.LENGTH_LONG);
         if (!isOnline()) {
             toast.show();
             MainActivity.this.finish();
         }
+        singleton = Singleton.getInstance();
         frameLayout = (FrameLayout) findViewById(R.id.frm);
         fragment1 = new MyListFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.frm, fragment1).commit();
@@ -51,27 +51,36 @@ public class MainActivity extends FragmentActivity implements MyListFragment.onS
         pendingIntent = PendingIntent.getService(getApplicationContext(), 0,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        long time = SystemClock.elapsedRealtime() + 5000;
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, time,
-                30000, pendingIntent);
-
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                long time = SystemClock.elapsedRealtime();
+                alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, time + 5000,
+                        30000, pendingIntent);
+            }
+        });
+        if (singleton.count == 0)
+            t.start();
+        singleton.count++;
     }
 
     @Override
-    public void someEvent(Integer position, ArrayList arr) {
+    public void someEvent(Integer position) {
+
         if (fragment2 == null) {
             Intent intent = new Intent();
             intent.putExtra(IDE_EXTRA, position);
-            intent.putExtra(IDE_ARR, arr);
-            intent.setClass(this, TextActivity.class);
+            intent.setClass(this, DetailsActivity.class);
             startActivityForResult(intent, ACTION_EDIT);
         }
     }
 
     public boolean isOnline() {
-        ConnectivityManager manager = (ConnectivityManager)
+        ConnectivityManager connectivityManager = (ConnectivityManager)
                 getSystemService(Context.CONNECTIVITY_SERVICE);
-        return manager.getActiveNetworkInfo().isAvailable();
+        if (connectivityManager.getActiveNetworkInfo() == null) {
+            return false;
+        } else return true;
     }
 
     @Override
@@ -98,6 +107,7 @@ public class MainActivity extends FragmentActivity implements MyListFragment.onS
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putParcelable("parcelable", singleton);
         if (fragment2 != null) {
             int visibility = frameLayout.getVisibility();
             outState.putInt("visibility", visibility);
@@ -107,6 +117,7 @@ public class MainActivity extends FragmentActivity implements MyListFragment.onS
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        singleton = savedInstanceState.getParcelable("parcelable");
         if (fragment2 != null) {
             int visibility = savedInstanceState.getInt("visibility");
             if (visibility == View.VISIBLE) frameLayout.setVisibility(View.VISIBLE);
