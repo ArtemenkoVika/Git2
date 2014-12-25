@@ -10,8 +10,8 @@ public class ResultNotificationActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result_notification);
-        title = getResources().getString(R.string.contentTitle2);
-        message = "Приложение обновилось!";
-        showDialog();
+        String title = getResources().getString(R.string.contentTitle2);
+        String message = getResources().getString(R.string.app_updated);
+        showDialog(title, message);
     }
 }

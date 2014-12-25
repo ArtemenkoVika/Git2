@@ -13,12 +13,7 @@ import com.example.admin.vkreader.patterns.Singleton;
 import java.util.HashMap;
 
 public class DetailsFragment extends BaseFragment {
-    public final String ARG_POSITION = "param";
-    public Integer position;
-    private TextView textView;
-    private ImageView imageView;
-    private HashMap<String, String> map;
-    private Singleton singleton;
+    public static final String ARG_POSITION = "param";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,7 +21,6 @@ public class DetailsFragment extends BaseFragment {
         if (getArguments() != null) {
             savedInstanceState = getArguments();
             position = savedInstanceState.getInt(ARG_POSITION);
-            singleton = Singleton.getInstance();
         }
     }
 
@@ -34,6 +28,7 @@ public class DetailsFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_details, container, false);
+        singleton = Singleton.getInstance();
         imageView = (ImageView) view.findViewById(R.id.image);
         textView = (TextView) view.findViewById(R.id.text);
         return view;
@@ -42,11 +37,17 @@ public class DetailsFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        try {
-            map = (HashMap<String, String>) singleton.getArrayList().get(position);
-            System.out.println(singleton.getArrayList().size());
-            click(textView, imageView, map);
-        } catch (NullPointerException e) {
+        if (getArguments() != null) {
+            try {
+                if (!singleton.isDateBase()) {
+                    map = (HashMap<String, String>) singleton.getArrayList().get(position);
+                    click(map);
+                }
+                else clickOfDataBase();
+            } catch (NullPointerException e) {
+                System.out.println(e + " - in DetailsFragment");
+                e.printStackTrace();
+            }
         }
     }
 }

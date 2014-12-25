@@ -13,7 +13,7 @@ public class LoadImageFromNetwork extends AsyncTask<String, Void, Bitmap> {
     private ImageView imageBitmap;
 
     public LoadImageFromNetwork(ImageView imageBitmap) {
-        this.imageBitmap = imageBitmap;
+        if (imageBitmap!= null) this.imageBitmap = imageBitmap;
     }
 
     protected Bitmap doInBackground(String... url) {
@@ -27,7 +27,10 @@ public class LoadImageFromNetwork extends AsyncTask<String, Void, Bitmap> {
     }
 
     protected void onPostExecute(Bitmap param) {
-        imageBitmap.setImageBitmap(param);
-        imageBitmap.setVisibility(View.VISIBLE);
+        if (imageBitmap!= null){
+            imageBitmap.setImageBitmap(param);
+            imageBitmap.setVisibility(View.VISIBLE);
+        }
+
     }
 }

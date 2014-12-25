@@ -12,27 +12,29 @@ import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 import com.example.admin.vkreader.R;
-import com.example.admin.vkreader.activity.PendingActivityStart;
+import com.example.admin.vkreader.activity.NotificationActivityStart;
 import com.example.admin.vkreader.activity.ResultNotificationActivity;
 import com.example.admin.vkreader.async_task.ParseTask;
+import com.example.admin.vkreader.entity.ResultClass;
 import com.example.admin.vkreader.patterns.Singleton;
 
 import java.util.concurrent.ExecutionException;
 
 public class UpdateService extends Service {
-    private final int mNotificationId = 001;
-    private final int mUpdateId = 002;
+    public static final int mNotificationId = 001;
+    public static final int mUpdateId = 002;
     private int count;
     private NotificationManager manager;
     private PendingIntent resultPendingIntent;
     private PendingIntent pendingIntentStart;
     private Singleton singleton;
+    private ResultClass resultClass = ResultClass.getInstance();
 
     @Override
     public void onCreate() {
-        Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
-        singleton = Singleton.getInstance();
         count = 0;
+        Toast.makeText(this, getResources().getString(R.string.service_started), Toast.LENGTH_LONG).show();
+        singleton = Singleton.getInstance();
         manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         Intent notificationIntent = new Intent(this,
@@ -40,7 +42,7 @@ public class UpdateService extends Service {
         resultPendingIntent = PendingIntent.getActivity(getApplicationContext(), 0,
                 notificationIntent, 0);
 
-        Intent intent = new Intent(this, PendingActivityStart.class);
+        Intent intent = new Intent(this, NotificationActivityStart.class);
         pendingIntentStart = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
 
         showNotification(getResources().getString(R.string.ticker),
@@ -60,16 +62,18 @@ public class UpdateService extends Service {
                     singleton.getArrayList().add(parseTask.getArr().get(i));
                 }
             } catch (InterruptedException e) {
-                Toast.makeText(this, "Please wait", Toast.LENGTH_LONG).show();
+                e.printStackTrace();
             } catch (ExecutionException e) {
                 e.printStackTrace();
             } catch (NullPointerException e) {
+                System.out.println(e + " - in UpdateService");
+                e.printStackTrace();
             }
             manager.cancel(mUpdateId);
             showNotification(getResources().getString(R.string.ticker2),
                     getResources().getString(R.string.contentTitle2),
                     getResources().getString(R.string.contentText2), mUpdateId, resultPendingIntent);
-            Toast.makeText(this, "APPLICATION UPDATE!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getResources().getString(R.string.app_updated), Toast.LENGTH_LONG).show();
         }
         count++;
         return Service.START_NOT_STICKY;

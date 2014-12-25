@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.admin.vkreader.R;
+import com.example.admin.vkreader.activity.MainActivity;
 import com.example.admin.vkreader.adapters.CustomAdapter;
 import com.example.admin.vkreader.async_task.ParseTask;
 import com.example.admin.vkreader.patterns.Singleton;
@@ -22,22 +23,25 @@ import com.example.admin.vkreader.patterns.Singleton;
 import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
-public class MyListFragment extends BaseFragment implements AdapterView.OnItemClickListener, View.OnClickListener {
-    public onSomeEventListener someEventListener;
-    private TextView textView;
-    private ImageView imageView;
+public class MyListFragment extends BaseFragment implements AdapterView.OnItemClickListener,
+        View.OnClickListener {
+    private onSomeEventListener someEventListener;
     private ListView listView;
     private Fragment fragment2;
-    private HashMap<String, String> map;
     private ParseTask parseTask;
     private FrameLayout frameLayout;
     private LinearLayout linearLayout;
-    private Singleton singleton;
+    private boolean isOnline;
+    private CustomAdapter adapter = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+        if (getArguments() != null) {
+            savedInstanceState = getArguments();
+            isOnline = savedInstanceState.getBoolean(MainActivity.IDE_BUNDLE_BOOL);
+        }
     }
 
     public interface onSomeEventListener {
@@ -50,7 +54,8 @@ public class MyListFragment extends BaseFragment implements AdapterView.OnItemCl
         try {
             someEventListener = (onSomeEventListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + "must implement onSomeEventListener");
+            System.out.println(e + " - in MyListFragment");
+            e.printStackTrace();
         }
     }
 
@@ -69,32 +74,39 @@ public class MyListFragment extends BaseFragment implements AdapterView.OnItemCl
             textView.setOnClickListener(this);
         }
         listView = (ListView) viewList.findViewById(R.id.my_list);
-        parseTask = new ParseTask(getResources().getString(R.string.url));
-        parseTask.execute();
-        try {
-            singleton.setArrayAdapter(new CustomAdapter(getActivity(), R.layout.row, parseTask.get()));
-            listView.setAdapter(singleton.getArrayAdapter());
-        } catch (InterruptedException e) {
-            Toast.makeText(getActivity(), "Please wait", Toast.LENGTH_LONG).show();
-        } catch (ExecutionException e) {
-        } catch (NullPointerException e) {
+        if (isOnline) {
+            parseTask = new ParseTask(getResources().getString(R.string.url));
+            parseTask.execute();
+            try {
+                if (adapter == null) adapter = new CustomAdapter(getActivity(), R.layout.row, parseTask.get());
+                singleton.setArrayAdapter(adapter);
+                listView.setAdapter(singleton.getArrayAdapter());
+            } catch (InterruptedException e) {
+                Toast.makeText(getActivity(), "Please wait", Toast.LENGTH_LONG).show();
+            } catch (ExecutionException e) {
+            } catch (NullPointerException e) {
+            }
+            if (singleton.getArrayList() == null) singleton.setArrayList(parseTask.getArr());
+            singleton.getArrayAdapter().setNotifyOnChange(true);
         }
-        if (singleton.getArrayList() == null) singleton.setArrayList(parseTask.getArr());
-        singleton.getArrayAdapter().setNotifyOnChange(true);
         listView.setOnItemClickListener(this);
         return viewList;
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        this.position = position;
         someEventListener.someEvent(position);
         if (fragment2 != null) {
             try {
                 frameLayout.setVisibility(View.GONE);
-                map = (HashMap<String, String>) singleton.getArrayList().get(position);
-                System.out.println(singleton.getArrayList().size());
-                click(textView, imageView, map);
+                if (!singleton.isDateBase()) {
+                    map = (HashMap<String, String>) singleton.getArrayList().get(position);
+                    click(map);
+                }
+                else clickOfDataBase();
             } catch (NullPointerException e) {
+                System.out.println(e + " - in MyListFragment (onItemClick)");
             }
         }
     }
@@ -111,7 +123,7 @@ public class MyListFragment extends BaseFragment implements AdapterView.OnItemCl
             textView.setText(map.get("textContent") + "\n\n" +
                     sdf.format(Integer.parseInt(map.get("textDate"))));
             imageView.setImageBitmap(ld.image);
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
         }
     }
 }

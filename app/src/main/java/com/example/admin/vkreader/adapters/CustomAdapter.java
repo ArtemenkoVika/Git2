@@ -17,7 +17,7 @@ public class CustomAdapter extends ArrayAdapter {
 
     public CustomAdapter(Context context, int textViewResourceId, List items) {
         super(context, textViewResourceId, items);
-        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     private class ViewHolder {
@@ -26,16 +26,16 @@ public class CustomAdapter extends ArrayAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
-        String item = (String) getItem(position);
-        if (view == null) {
-            view = inflater.inflate(R.layout.row, parent, false);
-            holder = new ViewHolder();
-            holder.textView = (TextView) view.findViewById(R.id.option_text);
-            view.setTag(holder);
-        } else {
-            holder = (ViewHolder) view.getTag();
-        }
-        holder.textView.setText(item);
+            String item = (String) getItem(position);
+            if (view == null) {
+                view = inflater.inflate(R.layout.row, parent, false);
+                holder = new ViewHolder();
+                holder.textView = (TextView) view.findViewById(R.id.option_text);
+                view.setTag(holder);
+            } else {
+                holder = (ViewHolder) view.getTag();
+            }
+            holder.textView.setText(item);
         return view;
     }
 }

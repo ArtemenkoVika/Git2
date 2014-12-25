@@ -17,5 +17,16 @@
     <string name="contentText2">UPDATE</string>
     <string name="title_activity_pending_activity_start"></string>
     <string name="title_activity_base"></string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="favorite">*FAVORITE*</string>
+    <string name="title_activity_favorite_list">FavoriteListActivity</string>
+    <string name="title_activity_favorite_details">FavoriteDetailsActivity</string>
+    <string name="back_to_main">Back to main</string>
+    <string name="net">No Internet Access</string>
+    <string name="dialog_nothing">None have been added!</string>
+    <string name="service_started">Service started!</string>
+    <string name="app_updated">The app has been updated!</string>
+    <string name="no_connection_database">No connection with the database!</string>
 
 </resources>
