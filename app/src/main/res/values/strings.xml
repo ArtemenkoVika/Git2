@@ -28,5 +28,9 @@
     <string name="service_started">Service started!</string>
     <string name="app_updated">The app has been updated!</string>
     <string name="no_connection_database">No connection with the database!</string>
+    <string name="facebook_app_id">1517282741894130</string>
+    <string name="title_activity_facebook_share">FacebookShare</string>
+    <string name="share">Share</string>
+    <string name="title_activity_google_share">GoogleShareActivity</string>
 
 </resources>

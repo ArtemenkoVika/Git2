@@ -4,14 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_list"
-    android:orientation="horizontal"
-    tools:context="com.example.admin.vkreader.fragments.MyListFragment">
+    android:orientation="vertical"
+    tools:context="com.example.admin.vkreader.fragments.ListFragment">
 
     <ListView
         android:id="@+id/my_list"
-        android:choiceMode="singleChoice"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
+        android:layout_height="match_parent"
+        android:layout_weight="5"
+        android:choiceMode="singleChoice"></ListView>
 
 </LinearLayout>
 

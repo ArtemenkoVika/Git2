@@ -1,36 +1,35 @@
 package com.example.admin.vkreader.async_task;
 
+import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.view.View;
-import android.widget.ImageView;
 
-import java.io.InputStream;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 public class LoadImageFromNetwork extends AsyncTask<String, Void, Bitmap> {
-    public Bitmap image;
-    private ImageView imageBitmap;
+    private Bitmap bitmap;
+    private Context context;
 
-    public LoadImageFromNetwork(ImageView imageBitmap) {
-        if (imageBitmap!= null) this.imageBitmap = imageBitmap;
+    public LoadImageFromNetwork(Context context) {
+        this.context = context;
     }
 
+    @Override
     protected Bitmap doInBackground(String... url) {
         try {
-            InputStream init = new java.net.URL(url[0]).openStream();
-            image = BitmapFactory.decodeStream(init);
+            ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.init(ImageLoaderConfiguration.createDefault(context));
+            bitmap = imageLoader.loadImageSync(url[0]);
         } catch (Exception e) {
+            System.out.println(e + " - in LoadImageFromNetwork");
             e.printStackTrace();
         }
-        return image;
+        return bitmap;
     }
 
+    @Override
     protected void onPostExecute(Bitmap param) {
-        if (imageBitmap!= null){
-            imageBitmap.setImageBitmap(param);
-            imageBitmap.setVisibility(View.VISIBLE);
-        }
-
+        super.onPostExecute(param);
     }
 }

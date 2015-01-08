@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.admin.vkreader.R;
 import com.example.admin.vkreader.activity.MainActivity;
@@ -20,10 +19,10 @@ import com.example.admin.vkreader.adapters.CustomAdapter;
 import com.example.admin.vkreader.async_task.ParseTask;
 import com.example.admin.vkreader.patterns.Singleton;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-public class MyListFragment extends BaseFragment implements AdapterView.OnItemClickListener,
+public class ListFragment extends BaseFragment implements AdapterView.OnItemClickListener,
         View.OnClickListener {
     private onSomeEventListener someEventListener;
     private ListView listView;
@@ -32,20 +31,72 @@ public class MyListFragment extends BaseFragment implements AdapterView.OnItemCl
     private FrameLayout frameLayout;
     private LinearLayout linearLayout;
     private boolean isOnline;
-    private CustomAdapter adapter = null;
+    private ArrayList list = new ArrayList();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
         if (getArguments() != null) {
             savedInstanceState = getArguments();
             isOnline = savedInstanceState.getBoolean(MainActivity.IDE_BUNDLE_BOOL);
         }
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_my_list, container, false);
+        singleton = Singleton.getInstance();;
+        imageView = (ImageView) getActivity().findViewById(R.id.image);
+        textView = (TextView) getActivity().findViewById(R.id.text);
+        frameLayout = (FrameLayout) getActivity().findViewById(R.id.frm);
+        fragment2 = getActivity().getSupportFragmentManager().findFragmentById(R.id.details_frag);
+        if (fragment2 != null) {
+            linearLayout = (LinearLayout) getActivity().findViewById(R.id.fragment2);
+            linearLayout.setOnClickListener(this);
+            textView.setOnClickListener(this);
+        }
+        listView = (ListView) view.findViewById(R.id.my_list);
+        if (isOnline) {
+            try {
+                if (resultClass.getTitle() == null) {
+                    resultClass.setTitle(new ArrayList<String>());
+                    resultClass.setText(new ArrayList<String>());
+                    resultClass.setUrls(new ArrayList<String>());
+
+                    parseTask = new ParseTask(getResources().getString(R.string.url));
+                    parseTask.execute();
+                    if (singleton.getArrayAdapter() == null)
+                        singleton.setArrayAdapter(new CustomAdapter(getActivity(), R.layout.row,
+                                parseTask.get()));
+                }
+            } catch (InterruptedException e) {
+                System.out.println(e + " - in MyListFragment");
+            } catch (ExecutionException e) {
+                System.out.println(e + " - in MyListFragment");
+            } catch (NullPointerException e) {
+                System.out.println(e + " - in MyListFragment (onCreateView)");
+            }
+        } else {
+            if (singleton.getArrayAdapter() == null)
+                singleton.setArrayAdapter(new CustomAdapter(getActivity(), R.layout.row, list));
+        }
+        listView.setAdapter(singleton.getArrayAdapter());
+        singleton.getArrayAdapter().setNotifyOnChange(true);
+        listView.setOnItemClickListener(this);
+        someEventListener.someListView(listView);
+        return view;
+    }
+
+    @Override
+    public void onClick(View v) {
+        frameLayout.setVisibility(View.GONE);
+    }
+
     public interface onSomeEventListener {
         public void someEvent(Integer i);
+
+        public void someListView(ListView listView);
     }
 
     @Override
@@ -60,70 +111,17 @@ public class MyListFragment extends BaseFragment implements AdapterView.OnItemCl
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View viewList = inflater.inflate(R.layout.fragment_my_list, container, false);
-        singleton = Singleton.getInstance();
-        imageView = (ImageView) getActivity().findViewById(R.id.image);
-        textView = (TextView) getActivity().findViewById(R.id.text);
-        frameLayout = (FrameLayout) getActivity().findViewById(R.id.frm);
-        fragment2 = getActivity().getSupportFragmentManager().findFragmentById(R.id.details_frag);
-        if (fragment2 != null) {
-            linearLayout = (LinearLayout) getActivity().findViewById(R.id.fragment2);
-            linearLayout.setOnClickListener(this);
-            textView.setOnClickListener(this);
-        }
-        listView = (ListView) viewList.findViewById(R.id.my_list);
-        if (isOnline) {
-            parseTask = new ParseTask(getResources().getString(R.string.url));
-            parseTask.execute();
-            try {
-                if (adapter == null) adapter = new CustomAdapter(getActivity(), R.layout.row, parseTask.get());
-                singleton.setArrayAdapter(adapter);
-                listView.setAdapter(singleton.getArrayAdapter());
-            } catch (InterruptedException e) {
-                Toast.makeText(getActivity(), "Please wait", Toast.LENGTH_LONG).show();
-            } catch (ExecutionException e) {
-            } catch (NullPointerException e) {
-            }
-            if (singleton.getArrayList() == null) singleton.setArrayList(parseTask.getArr());
-            singleton.getArrayAdapter().setNotifyOnChange(true);
-        }
-        listView.setOnItemClickListener(this);
-        return viewList;
-    }
-
-    @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         this.position = position;
         someEventListener.someEvent(position);
         if (fragment2 != null) {
             try {
                 frameLayout.setVisibility(View.GONE);
-                if (!singleton.isDateBase()) {
-                    map = (HashMap<String, String>) singleton.getArrayList().get(position);
-                    click(map);
-                }
+                if (!singleton.isDataBase()) click();
                 else clickOfDataBase();
             } catch (NullPointerException e) {
                 System.out.println(e + " - in MyListFragment (onItemClick)");
             }
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        frameLayout.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        try {
-            textView.setText(map.get("textContent") + "\n\n" +
-                    sdf.format(Integer.parseInt(map.get("textDate"))));
-            imageView.setImageBitmap(ld.image);
-        } catch (Exception e) {
         }
     }
 }

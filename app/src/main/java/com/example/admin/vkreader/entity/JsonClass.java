@@ -1,21 +1,14 @@
 package com.example.admin.vkreader.entity;
 
-import java.util.HashMap;
-
 public class JsonClass {
     private String textContent;
+    private int date;
     private String imageContent;
-    private String textDate;
-    private HashMap<String, String> map = new HashMap<String, String>();
 
-    public JsonClass(String textContent, String textDate, String imageContent) {
+    public JsonClass(String textContent, int date, String imageContent) {
         this.textContent = textContent;
-        this.textDate = textDate;
+        this.date = date;
         this.imageContent = imageContent;
-    }
-
-    public HashMap<String, String> getMap() {
-        return map;
     }
 
     public String getTextContent() {
@@ -26,8 +19,7 @@ public class JsonClass {
         return imageContent;
     }
 
-    public String getTextDate() {
-        return textDate;
+    public int getDate() {
+        return date;
     }
 }
-

@@ -20,7 +20,7 @@ public class DataBase implements IDataBase {
 
     @Override
     public void addArticles(Context context, DataBaseOfFavoriteEntity data) {
-        SQLiteDatabase db = new DataBaseOfFavorite(context).getWritableDatabase();
+        SQLiteDatabase db = DataBaseOfFavorite.getInstance(context).getWritableDatabase();
         if (db == null)
             Toast.makeText(context, context.getResources().getString(R.string.no_connection_database),
                     Toast.LENGTH_LONG).show();
@@ -37,7 +37,7 @@ public class DataBase implements IDataBase {
     @Override
     public ArrayList showSavedArticles(Context context) {
         ArrayList arrayList = new ArrayList();
-        SQLiteDatabase db = new DataBaseOfFavorite(context).getReadableDatabase();
+        SQLiteDatabase db = DataBaseOfFavorite.getInstance(context).getReadableDatabase();
         Cursor cursor = db.query(DataBaseOfFavorite.TABLE_NAME, null, null, null, null,
                 null, null);
         b_cursor = cursor.moveToFirst();
@@ -58,7 +58,7 @@ public class DataBase implements IDataBase {
 
     @Override
     public void deleteArticles(Context context, int positionDelete) {
-        SQLiteDatabase db = new DataBaseOfFavorite(context).getWritableDatabase();
+        SQLiteDatabase db = DataBaseOfFavorite.getInstance(context).getWritableDatabase();
         db.delete(DataBaseOfFavorite.TABLE_NAME, DataBaseOfFavorite._ID + "=?",
                 new String[]{String.valueOf(singleton.getId().get(positionDelete))});
         db.close();
@@ -66,7 +66,7 @@ public class DataBase implements IDataBase {
 
     @Override
     public void deleteAll(Context context) {
-        SQLiteDatabase db = new DataBaseOfFavorite(context).getReadableDatabase();
+        SQLiteDatabase db = DataBaseOfFavorite.getInstance(context).getReadableDatabase();
         db.delete(DataBaseOfFavorite.TABLE_NAME, null, null);
         db.close();
     }

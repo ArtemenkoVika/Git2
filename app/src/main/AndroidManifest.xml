@@ -4,12 +4,19 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/portfolio"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
+
+        <intent-filter>
+            <action android:name="android.intent.action.SEND" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name">
@@ -55,6 +62,21 @@
         <activity
             android:name=".activity.BaseActivity"
             android:label="@string/title_activity_base" />
+        <activity
+            android:name=".activity.FacebookShareActivity"
+            android:label="@string/title_activity_facebook_share"></activity>
+
+        <activity
+            android:name=".activity.GoogleShareActivity"
+            android:label="@string/title_activity_google_share"></activity>
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:resource="@string/facebook_app_id" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

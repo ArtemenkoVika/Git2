@@ -8,8 +8,8 @@
 
     <FrameLayout
         android:id="@+id/frm"
-        android:background="@color/app_blue"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
+        android:layout_height="match_parent"
+        android:background="@color/app_blue"></FrameLayout>
 
 </android.support.v4.widget.DrawerLayout>

@@ -5,11 +5,10 @@ import com.example.admin.vkreader.adapters.CustomAdapter;
 import java.util.ArrayList;
 
 public class Singleton {
-    private static final Singleton instance = new Singleton();
     public int count = 0;
+    private static final Singleton instance = new Singleton();
     private CustomAdapter arrayAdapter;
-    private ArrayList arrayList;
-    private boolean isDateBase = false;
+    private boolean isDataBase = false;
     private ArrayList id;
 
     private Singleton() {
@@ -27,12 +26,12 @@ public class Singleton {
         this.arrayAdapter = arrayAdapter;
     }
 
-    public boolean isDateBase() {
-        return isDateBase;
+    public boolean isDataBase() {
+        return isDataBase;
     }
 
-    public void setDateBase(boolean isDateBase) {
-        this.isDateBase = isDateBase;
+    public void setDataBase(boolean isDataBase) {
+        this.isDataBase = isDataBase;
     }
 
     public ArrayList getId() {
@@ -41,13 +40,5 @@ public class Singleton {
 
     public void setId(ArrayList id) {
         this.id = id;
-    }
-
-    public ArrayList getArrayList() {
-        return arrayList;
-    }
-
-    public void setArrayList(ArrayList arrayList) {
-        this.arrayList = arrayList;
     }
 }

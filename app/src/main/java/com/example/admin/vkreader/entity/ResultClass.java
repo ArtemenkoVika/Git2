@@ -1,14 +1,11 @@
 package com.example.admin.vkreader.entity;
 
-import android.graphics.Bitmap;
-
 import java.util.ArrayList;
 
 public class ResultClass {
-    private static ArrayList<String> title;
-    private static ArrayList<String> text;
-    private static ArrayList<String> urls;
-    private static ArrayList<Bitmap> bitmaps;
+    private ArrayList<String> title;
+    private ArrayList<String> text;
+    private ArrayList<String> urls;
 
     private static final ResultClass instance = new ResultClass();
 
@@ -41,13 +38,5 @@ public class ResultClass {
 
     public void setUrls(ArrayList<String> urls) {
         this.urls = urls;
-    }
-
-    public ArrayList<Bitmap> getBitmaps() {
-        return bitmaps;
-    }
-
-    public void setBitmaps(ArrayList<Bitmap> bitmaps) {
-        this.bitmaps = bitmaps;
     }
 }
