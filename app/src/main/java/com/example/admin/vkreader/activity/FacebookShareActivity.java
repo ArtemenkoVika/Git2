@@ -29,19 +29,20 @@ public class FacebookShareActivity extends FragmentActivity {
         setContentView(R.layout.activity_facebook_share);
         AppEventsLogger.activateApp(getApplicationContext(), getResources().getString(R.string.
                 facebook_app_id));
-
+        uiHelper = new UiLifecycleHelper(this, callback);
         Session session = Session.getActiveSession();
         if (session == null) {
             if (savedInstanceState != null) {
                 session = Session.restoreSession(this, null, callback, savedInstanceState);
+                uiHelper.onCreate(savedInstanceState);
             }
             if (session == null) {
                 session = new Session(this);
             }
             Session.setActiveSession(session);
         }
-        uiHelper = new UiLifecycleHelper(this, callback);
-        uiHelper.onCreate(savedInstanceState);
+
+
         System.out.println("Start Facebook login");
         Session.openActiveSession(this, true, callback);
     }

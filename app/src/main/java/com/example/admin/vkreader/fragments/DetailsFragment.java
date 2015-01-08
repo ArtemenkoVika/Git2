@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.admin.vkreader.R;
+import com.example.admin.vkreader.activity.FacebookShareActivity;
 import com.example.admin.vkreader.activity.GoogleShareActivity;
 import com.example.admin.vkreader.patterns.Singleton;
 import com.google.android.gms.plus.PlusShare;
